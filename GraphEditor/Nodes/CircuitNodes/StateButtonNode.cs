@@ -1,16 +1,13 @@
 ﻿using NodeGraphControl;
 using NodeGraphControl.Elements;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestProject.JSON;
+using GraphEditor.Nodes;
+using GraphEditor.JSON;
 
-namespace TestProject.Nodes.CircuitNodes
+namespace GraphEditor.Nodes.CircuitNodes
 {
     internal class JsonParamsStateButtonNode : JsonParamsData
     {
@@ -18,7 +15,9 @@ namespace TestProject.Nodes.CircuitNodes
         public int States { get; set; }
     }
 
-    [NodeType("StateButton", JsonParamsType = typeof(JsonParamsStateButtonNode))]
+    [NodeType("StateButton", 
+        JsonParamsType = typeof(JsonParamsStateButtonNode),
+        ContextCategory = "Panel Feature")]
     internal class StateButtonNode : AbstractNode, ISerializableNode
     {
         private int _statesCount = 0;
@@ -48,7 +47,7 @@ namespace TestProject.Nodes.CircuitNodes
             NodeType = GetType().ToString().Split('.').Last();
             Description = "State button circuit control.";
             BaseColor = Color.FromArgb(CommonStates.NodeColorAlpha, 31, 36, 42);
-            HeaderColor = Color.FromArgb(62, 88, 140);
+            HeaderColor = Color.DarkSlateBlue;
             NodeWidth = 300;
 
             _statesCount = 2;

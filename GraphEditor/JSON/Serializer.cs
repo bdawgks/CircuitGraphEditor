@@ -1,7 +1,6 @@
 ﻿using NodeGraphControl;
 using NodeGraphControl.Elements;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -10,8 +9,9 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
+using GraphEditor.Nodes;
 
-namespace TestProject.JSON
+namespace GraphEditor.JSON
 {
     internal class JsonData
     {
@@ -80,26 +80,16 @@ namespace TestProject.JSON
             get => _nodeJsonParamTypes;
         }
 
-        private static NodeTypeAttribute GetNodeTypeAttribute(Type type)
-        {
-            NodeTypeAttribute nodeTypeAttribute = (NodeTypeAttribute)Attribute.GetCustomAttribute(type, typeof(NodeTypeAttribute));
-            return nodeTypeAttribute;
-        }
-
-
         public static void InitNodeFactory()
         {
             if (_serialNodeTypes.Count > 0)
                 _serialNodeTypes.Clear();
 
-            var typesWithAttribute = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsDefined(typeof(NodeTypeAttribute), inherit: true))
-                .ToList();
+            var typesWithAttribute = NodeTypeAttribute.GetAttributedTypes();
 
             foreach (var type in typesWithAttribute)
             {
-                NodeTypeAttribute nodeTypeAttribute = GetNodeTypeAttribute(type);
-                if (nodeTypeAttribute == null)
+                if (!NodeTypeAttribute.TryGetAttribute(type, out NodeTypeAttribute nodeTypeAttribute))
                     continue;
 
                 if (typeof(ISerializableNode).IsAssignableFrom(type))
@@ -133,11 +123,8 @@ namespace TestProject.JSON
                 if (node is ISerializableNode sNode)
                 {
                     nodeData.NodeData = sNode.GetNodeTypeJsonData();
-                    var attrib = GetNodeTypeAttribute(sNode.GetType());
-                    if (attrib != null)
-                    {
-                        nodeData.NodeData.NodeType = attrib.NodeType;
-                    }
+                    if (!NodeTypeAttribute.TryGetAttribute(sNode.GetType(), out NodeTypeAttribute nodeTypeAttribute))
+                        nodeData.NodeData.NodeType = nodeTypeAttribute.NodeType;
                 }
 
                 data.Nodes.Add(nodeData);

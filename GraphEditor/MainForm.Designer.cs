@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NodeGraphControl;
 using NodeGraphControl.Elements;
 
-namespace TestProject {
+namespace GraphEditor {
     partial class MainForm {
         /// <summary>
         /// Required designer variable.
@@ -110,14 +110,14 @@ namespace TestProject {
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -126,7 +126,6 @@ namespace TestProject {
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
-            this.ControlBox = false;
             this.Controls.Add(this.statusBar);
             this.Controls.Add(this.propertyGrid);
             this.Controls.Add(this.nodeGraphControl);
@@ -135,7 +134,7 @@ namespace TestProject {
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Text = "NodeGraphControl Sample App";
+            this.Text = "Circuit Graph Editor";
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPanelZoom)).EndInit();
             this.menuStrip1.ResumeLayout(false);

@@ -10,9 +10,9 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using TestProject.JSON;
+using GraphEditor.JSON;
 
-namespace TestProject.Nodes.CircuitNodes
+namespace GraphEditor.Nodes.CircuitNodes
 {
     internal class JsonParamsRotarySwitchNode : JsonParamsData
     {
@@ -20,7 +20,9 @@ namespace TestProject.Nodes.CircuitNodes
         public int States { get; set; }
     }
 
-    [NodeType("RotarySwitch", JsonParamsType = typeof(JsonParamsRotarySwitchNode))]
+    [NodeType("RotarySwitch", 
+        JsonParamsType = typeof(JsonParamsRotarySwitchNode), 
+        ContextCategory = "Panel Feature")]
     internal class RotarySwitchNode : AbstractNode, ISerializableNode
     {
         private readonly SocketIn _lockCircuit;
@@ -51,7 +53,7 @@ namespace TestProject.Nodes.CircuitNodes
             NodeType = GetType().ToString().Split('.').Last();
             Description = "Rotary switch circuit control.";
             BaseColor = Color.FromArgb(CommonStates.NodeColorAlpha, 31, 36, 42);
-            HeaderColor = Color.FromArgb(62, 88, 140);
+            HeaderColor = Color.DarkSlateGray;
 
             Sockets.Add(_lockCircuit);
             _statesCount = 2;

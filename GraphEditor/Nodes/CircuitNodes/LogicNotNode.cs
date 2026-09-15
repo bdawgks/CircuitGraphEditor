@@ -1,16 +1,21 @@
-﻿using NodeGraphControl;
+﻿using GraphEditor.JSON;
+using GraphEditor.Nodes;
+using NodeGraphControl;
 using NodeGraphControl.Elements;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using GraphEditor.Nodes;
-using GraphEditor.JSON;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
-namespace GraphEditor.Nodes.CircuitNodes
+namespace TestProject.Nodes.CircuitNodes
 {
-    [NodeType("LogicAnd", 
+    [NodeType("LogicNot",
         JsonParamsType = typeof(JsonParamsNodeGeneric),
         ContextCategory = "Logic",
-        ContextName = "AND")]
+        ContextName = "NOT")]
     public class LogincAndNode : AbstractNode, ISerializableNode
     {
         private readonly SocketIn _inSocket;
@@ -24,11 +29,11 @@ namespace GraphEditor.Nodes.CircuitNodes
         {
             Location = location;
 
-            Name = "Logic And";
+            Name = "Logic Not";
             NodeType = GetType().ToString().Split('.').Last();
-            Description = "Applies AND logic to multiple circuit inputs, and outputs a result circuit.";
+            Description = "Applies NOT logic to any circuit inputs, and outputs a result circuit.";
             BaseColor = Color.FromArgb(CommonStates.NodeColorAlpha, 31, 36, 42);
-            HeaderColor = Color.Firebrick;
+            HeaderColor = Color.MidnightBlue;
 
             _inSocket = new SocketIn(typeof(CircuitType), "Inputs", this, true);
             _resultSocket = new SocketOut(typeof(CircuitType), "Result", this);
@@ -51,7 +56,7 @@ namespace GraphEditor.Nodes.CircuitNodes
 
         void ISerializableNode.SetNodeJsonParams(JsonParamsData nodeJsonParams)
         {
-            
+
         }
     }
 }

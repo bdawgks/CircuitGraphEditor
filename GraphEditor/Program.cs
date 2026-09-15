@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TestProject {
+namespace GraphEditor {
     static class Program {
         /// <summary>
         /// The main entry point for the application.
@@ -10,7 +10,7 @@ namespace TestProject {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TestProject.MainForm());
+            Application.Run(new GraphEditor.MainForm());
         }
     }
 }

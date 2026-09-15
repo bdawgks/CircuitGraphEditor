@@ -78,7 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JSON\ISerializableNode.cs" />
-    <Compile Include="JSON\NodeTypeAttribute.cs" />
+    <Compile Include="Nodes\CircuitNodes\LogicNotNode.cs" />
+    <Compile Include="Utils\NodeTypeAttribute.cs" />
     <Compile Include="JSON\Serializer.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -87,19 +88,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Nodes\CircuitNodes\LogincAndNode.cs" />
-    <Compile Include="Nodes\CircuitNodes\CircuitType.cs" />
-    <Compile Include="Nodes\CircuitNodes\ResizableSocket.cs" />
+    <Compile Include="Utils\CircuitType.cs" />
+    <Compile Include="Utils\ResizableSocket.cs" />
     <Compile Include="Nodes\CircuitNodes\RotarySwitchNode.cs" />
     <Compile Include="Nodes\CircuitNodes\StateButtonNode.cs" />
-    <Compile Include="Nodes\MathNodes\MathAvgNode.cs" />
-    <Compile Include="Nodes\MathNodes\MathNumNode.cs" />
-    <Compile Include="Nodes\MathNodes\MathSumNode.cs" />
-    <Compile Include="Nodes\NodeChar.cs" />
-    <Compile Include="Nodes\NodeLogicOscillator.cs" />
-    <Compile Include="Nodes\NodeLogicOutput.cs" />
-    <Compile Include="Nodes\NodeMonitor.cs" />
-    <Compile Include="Nodes\NodeString.cs" />
-    <Compile Include="Nodes\NodeStringXOR.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
