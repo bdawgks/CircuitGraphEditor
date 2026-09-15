@@ -1,0 +1,12 @@
+/.idea/
+/GraphEditor/obj/
+/NodeGraphControl/obj/
+/.vs
+/packages
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
