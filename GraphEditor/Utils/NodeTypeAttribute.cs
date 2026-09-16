@@ -19,11 +19,14 @@ namespace GraphEditor.Nodes
 
         public Type JsonParamsType { get; set; }
 
+        public string ParamsTypeName { get; set; }
+
         public NodeTypeAttribute(string type)
         {
             NodeType = type;
             ContextName = type;
             ContextCategory = "Other";
+            ParamsTypeName = type;
         }
 
         public static List<Type> GetAttributedTypes()

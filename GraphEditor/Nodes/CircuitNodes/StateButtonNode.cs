@@ -1,11 +1,12 @@
-﻿using NodeGraphControl;
+﻿using GraphEditor.JSON;
+using GraphEditor.Nodes;
+using GraphEditor.Utils;
+using NodeGraphControl;
 using NodeGraphControl.Elements;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using GraphEditor.Nodes;
-using GraphEditor.JSON;
 
 namespace GraphEditor.Nodes.CircuitNodes
 {
@@ -18,7 +19,7 @@ namespace GraphEditor.Nodes.CircuitNodes
     [NodeType("StateButton", 
         JsonParamsType = typeof(JsonParamsStateButtonNode),
         ContextCategory = "Panel Feature")]
-    internal class StateButtonNode : AbstractNode, ISerializableNode
+    internal class StateButtonNode : DisplayParametersNode, ISerializableNode
     {
         private int _statesCount = 0;
 
@@ -26,6 +27,7 @@ namespace GraphEditor.Nodes.CircuitNodes
         private readonly ResizableSocket<SocketOut, CircuitType> _outSockets;
 
         [Category("Parameters")]
+        [DisplayParameter]
         public string ButtonID { get; set; }
 
         [Category("Parameters")]

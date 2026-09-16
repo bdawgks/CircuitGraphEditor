@@ -9,6 +9,7 @@ namespace GraphEditor.Nodes.CircuitNodes
 {
     [NodeType("LogicAnd", 
         JsonParamsType = typeof(JsonParamsNodeGeneric),
+        ParamsTypeName = "Generic",
         ContextCategory = "Logic",
         ContextName = "AND")]
     public class LogincAndNode : AbstractNode, ISerializableNode

@@ -14,6 +14,7 @@ namespace TestProject.Nodes.CircuitNodes
 {
     [NodeType("LogicNot",
         JsonParamsType = typeof(JsonParamsNodeGeneric),
+        ParamsTypeName = "Generic",
         ContextCategory = "Logic",
         ContextName = "NOT")]
     public class LogincAndNode : AbstractNode, ISerializableNode
@@ -40,6 +41,7 @@ namespace TestProject.Nodes.CircuitNodes
             Sockets.Add(_inSocket);
             Sockets.Add(_resultSocket);
         }
+
         public override bool IsReady()
         {
             return true;

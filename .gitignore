@@ -1,5 +1,6 @@
 /.idea/
 /GraphEditor/obj/
+/GraphEditor/bin/
 /NodeGraphControl/obj/
 /.vs
 /packages

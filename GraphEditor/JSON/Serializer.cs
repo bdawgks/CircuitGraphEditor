@@ -95,7 +95,10 @@ namespace GraphEditor.JSON
                 if (typeof(ISerializableNode).IsAssignableFrom(type))
                     _serialNodeTypes.Add(nodeTypeAttribute.NodeType, type);
 
-                _nodeJsonParamTypes.Add(nodeTypeAttribute.NodeType, nodeTypeAttribute.JsonParamsType);
+                if (_nodeJsonParamTypes.ContainsKey(nodeTypeAttribute.ParamsTypeName))
+                    continue;
+
+                _nodeJsonParamTypes.Add(nodeTypeAttribute.ParamsTypeName, nodeTypeAttribute.JsonParamsType);
             }
         }
 
@@ -124,7 +127,9 @@ namespace GraphEditor.JSON
                 {
                     nodeData.NodeData = sNode.GetNodeTypeJsonData();
                     if (!NodeTypeAttribute.TryGetAttribute(sNode.GetType(), out NodeTypeAttribute nodeTypeAttribute))
-                        nodeData.NodeData.NodeType = nodeTypeAttribute.NodeType;
+                        continue;
+                        
+                    nodeData.NodeData.NodeType = nodeTypeAttribute.NodeType;
                 }
 
                 data.Nodes.Add(nodeData);

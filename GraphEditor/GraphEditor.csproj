@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{68FB9C18-76DE-458D-9B5F-97FA0CE240E0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TestProject</RootNamespace>
-    <AssemblyName>TestProject</AssemblyName>
+    <RootNamespace>GraphEditor</RootNamespace>
+    <AssemblyName>GraphEditor</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -79,6 +79,10 @@
   <ItemGroup>
     <Compile Include="JSON\ISerializableNode.cs" />
     <Compile Include="Nodes\CircuitNodes\LogicNotNode.cs" />
+    <Compile Include="Nodes\CircuitNodes\PointsNode.cs" />
+    <Compile Include="Nodes\CircuitNodes\SignalAspectNode.cs" />
+    <Compile Include="Nodes\DisplayParametersNode.cs" />
+    <Compile Include="Utils\DisplayParameterAttribute.cs" />
     <Compile Include="Utils\NodeTypeAttribute.cs" />
     <Compile Include="JSON\Serializer.cs" />
     <Compile Include="MainForm.cs">
@@ -105,6 +109,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -1,16 +1,12 @@
-﻿using NodeGraphControl;
+﻿using GraphEditor.JSON;
+using GraphEditor.Utils;
+using NodeGraphControl;
 using NodeGraphControl.Elements;
 using System;
-using System.Collections.Generic;
+using System.CodeDom;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using GraphEditor.JSON;
 
 namespace GraphEditor.Nodes.CircuitNodes
 {
@@ -23,7 +19,7 @@ namespace GraphEditor.Nodes.CircuitNodes
     [NodeType("RotarySwitch", 
         JsonParamsType = typeof(JsonParamsRotarySwitchNode), 
         ContextCategory = "Panel Feature")]
-    internal class RotarySwitchNode : AbstractNode, ISerializableNode
+    internal class RotarySwitchNode : DisplayParametersNode, ISerializableNode
     {
         private readonly SocketIn _lockCircuit;
         private int _statesCount = 0;
@@ -31,6 +27,7 @@ namespace GraphEditor.Nodes.CircuitNodes
         private readonly ResizableSocket<SocketOut, CircuitType> _outSockets;
 
         [Category("Parameters")]
+        [DisplayParameter]
         public string SwitchID { get; set; }
 
         [Category("Parameters")]
