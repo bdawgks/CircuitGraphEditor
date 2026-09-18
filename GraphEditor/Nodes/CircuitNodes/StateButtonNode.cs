@@ -53,8 +53,8 @@ namespace GraphEditor.Nodes.CircuitNodes
             NodeWidth = 300;
 
             _statesCount = 2;
-            _inSockets = new ResizableSocket<SocketIn, CircuitType>(this, "State {0} Active", _statesCount);
-            _outSockets = new ResizableSocket<SocketOut, CircuitType>(this, "State {0} Switch", _statesCount);
+            _inSockets = new ResizableSocket<SocketIn, CircuitType>(this, "Show State #{0}", _statesCount);
+            _outSockets = new ResizableSocket<SocketOut, CircuitType>(this, "Activated State #{0}", _statesCount);
         }
         public override bool IsReady()
         {

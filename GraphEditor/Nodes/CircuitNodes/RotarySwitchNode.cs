@@ -54,7 +54,7 @@ namespace GraphEditor.Nodes.CircuitNodes
 
             Sockets.Add(_lockCircuit);
             _statesCount = 2;
-            _outSockets = new ResizableSocket<SocketOut, CircuitType>(this, "State {0}", _statesCount);
+            _outSockets = new ResizableSocket<SocketOut, CircuitType>(this, "State #{0}", _statesCount);
         }
         public override bool IsReady()
         {
