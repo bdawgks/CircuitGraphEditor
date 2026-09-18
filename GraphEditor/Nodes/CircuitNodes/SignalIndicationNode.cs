@@ -13,16 +13,16 @@ using System.Threading.Tasks;
 
 namespace TestProject.Nodes.CircuitNodes
 {
-    internal class JsonParamsSignalAspect : JsonParamsData
+    internal class JsonParamsSignalIndication : JsonParamsData
     {
         public string SignalID { get; set; }
-        public string Aspect { get; set; }
+        public string Indication { get; set; }
     }
 
-    [NodeType("SignalAspect",
-        JsonParamsType = typeof(JsonParamsSignalAspect),
+    [NodeType("SignalIndication",
+        JsonParamsType = typeof(JsonParamsSignalIndication),
         ContextCategory = "Track Infrastructure")]
-    internal class SignalAspectNode : DisplayParametersNode, ISerializableNode
+    internal class SignalIndicationNode : DisplayParametersNode, ISerializableNode
     {
         private readonly SocketIn _inSocket;
         private readonly SocketOut _outSocket;
@@ -33,25 +33,25 @@ namespace TestProject.Nodes.CircuitNodes
 
         [Category("Parameters")]
         [DisplayParameter]
-        public string Aspect { get; set; } = string.Empty;
+        public string Indication { get; set; } = string.Empty;
 
-        public SignalAspectNode() : this(new Point(0, 0))
+        public SignalIndicationNode() : this(new Point(0, 0))
         {
         }
 
-        public SignalAspectNode(Point location)
+        public SignalIndicationNode(Point location)
         {
             Location = location;
 
-            Name = "Signal Aspect";
+            Name = "Signal Indication";
             NodeType = GetType().ToString().Split('.').Last();
-            Description = "Signal aspect control circuit.";
+            Description = "Signal indication control circuit.";
             BaseColor = Color.FromArgb(CommonStates.NodeColorAlpha, 31, 36, 42);
             HeaderColor = Color.DimGray;
             NodeWidth = 300;
 
-            _inSocket = new SocketIn(typeof(CircuitType), "Set Aspect", this, true);
-            _outSocket = new SocketOut(typeof(CircuitType), "Aspect Shown", this);
+            _inSocket = new SocketIn(typeof(CircuitType), "Set Indication", this, true);
+            _outSocket = new SocketOut(typeof(CircuitType), "Indication Shown", this);
 
             Sockets.Add(_inSocket); 
             Sockets.Add(_outSocket);
@@ -68,19 +68,19 @@ namespace TestProject.Nodes.CircuitNodes
 
         public JsonParamsData GetNodeTypeJsonData()
         {
-            return new JsonParamsSignalAspect()
+            return new JsonParamsSignalIndication()
             {
                 SignalID = SignalID,
-                Aspect = Aspect
+                Indication = Indication
             };
         }
 
         public void SetNodeJsonParams(JsonParamsData nodeJsonParams)
         {
-            if (nodeJsonParams is JsonParamsSignalAspect signalParams)
+            if (nodeJsonParams is JsonParamsSignalIndication signalParams)
             {
                 SignalID = signalParams.SignalID;
-                Aspect = signalParams.Aspect;
+                Indication = signalParams.Indication;
             }
         }
     }

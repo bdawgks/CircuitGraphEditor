@@ -80,7 +80,7 @@
     <Compile Include="JSON\ISerializableNode.cs" />
     <Compile Include="Nodes\CircuitNodes\LogicNotNode.cs" />
     <Compile Include="Nodes\CircuitNodes\PointsNode.cs" />
-    <Compile Include="Nodes\CircuitNodes\SignalAspectNode.cs" />
+    <Compile Include="Nodes\CircuitNodes\SignalIndicationNode.cs" />
     <Compile Include="Nodes\DisplayParametersNode.cs" />
     <Compile Include="Utils\DisplayParameterAttribute.cs" />
     <Compile Include="Utils\NodeTypeAttribute.cs" />
