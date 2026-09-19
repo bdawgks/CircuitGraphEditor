@@ -2,6 +2,7 @@
 /GraphEditor/obj/
 /GraphEditor/bin/
 /NodeGraphControl/obj/
+/NodeGraphControl/bin/
 /.vs
 /packages
 

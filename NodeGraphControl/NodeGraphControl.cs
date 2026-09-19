@@ -64,6 +64,15 @@ namespace NodeGraphControl {
             get => _connections;
         }
 
+        public void Clear()
+        {
+            var nodes = _graphNodes.ToArray();
+            foreach (AbstractNode node in nodes)
+            {
+                DeleteNode(node);
+            }
+        }
+
         public void AddNode(AbstractNode node) {
             node.InvokeRepaint += n_InvokeRepaint;
             _graphNodes.Add(node);

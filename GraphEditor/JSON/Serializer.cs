@@ -180,6 +180,8 @@ namespace GraphEditor.JSON
                 return false;
             }
 
+            graph.Clear();
+
             Dictionary<int, AbstractNode> nodeFromId = new Dictionary<int, AbstractNode>();
             foreach (JsonNodeData nodeData in data.Nodes)
             {
