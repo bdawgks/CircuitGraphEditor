@@ -17,16 +17,16 @@ namespace TestProject.Nodes.CircuitNodes
         ParamsTypeName = "Generic",
         ContextCategory = "Logic",
         ContextName = "NOT")]
-    public class LogincAndNode : AbstractNode, ISerializableNode
+    public class LogicNotNode : AbstractNode, ISerializableNode
     {
         private readonly SocketIn _inSocket;
         private readonly SocketOut _resultSocket;
 
-        public LogincAndNode() : this(new Point(0, 0))
+        public LogicNotNode() : this(new Point(0, 0))
         {
         }
 
-        public LogincAndNode(Point location)
+        public LogicNotNode(Point location)
         {
             Location = location;
 
