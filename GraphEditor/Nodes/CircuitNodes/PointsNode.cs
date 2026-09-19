@@ -73,9 +73,9 @@ namespace TestProject.Nodes.CircuitNodes
 
         public void SetNodeJsonParams(JsonParamsData nodeJsonParams)
         {
-            if (nodeJsonParams is JsonParamsPoints signalParams)
+            if (nodeJsonParams is JsonParamsPoints pointsParams)
             {
-                PointsID = signalParams.PointsID;
+                PointsID = pointsParams.PointsID;
             }
         }
     }

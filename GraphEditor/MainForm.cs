@@ -8,9 +8,13 @@ using GraphEditor.JSON;
 using GraphEditor.Nodes.CircuitNodes;
 using GraphEditor.Nodes;
 using System.Reflection;
+using System.IO;
 
 namespace GraphEditor {
     public partial class MainForm : Form {
+
+        private string lastFilePath = Application.LocalUserAppDataPath;
+
         public MainForm() {
             InitializeComponent();
         }
@@ -65,28 +69,34 @@ namespace GraphEditor {
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = Application.LocalUserAppDataPath;
-            saveFileDialog.Filter = "json files(*.json) | *.json";
-            saveFileDialog.FilterIndex = 0;
-            saveFileDialog.RestoreDirectory = true;
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                InitialDirectory = lastFilePath,
+                Filter = "json files(*.json) | *.json",
+                FilterIndex = 0,
+                RestoreDirectory = false
+            };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
+                lastFilePath = Path.GetDirectoryName(saveFileDialog.FileName);
                 Serializer.Save(saveFileDialog.FileName, nodeGraphControl);
             }
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Application.LocalUserAppDataPath;
-            openFileDialog.Filter = "json files(*.json) | *.json";
-            openFileDialog.FilterIndex = 0;
-            openFileDialog.RestoreDirectory = true;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                InitialDirectory = lastFilePath,
+                Filter = "json files(*.json) | *.json",
+                FilterIndex = 0,
+                RestoreDirectory = false
+            };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                lastFilePath = Path.GetDirectoryName(openFileDialog.FileName);
                 Serializer.Load(openFileDialog.FileName, nodeGraphControl);
             }
         }

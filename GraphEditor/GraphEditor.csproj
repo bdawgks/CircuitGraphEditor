@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JSON\ISerializableNode.cs" />
+    <Compile Include="Nodes\CircuitNodes\BlockControllerNode.cs" />
     <Compile Include="Nodes\CircuitNodes\LogicNotNode.cs" />
     <Compile Include="Nodes\CircuitNodes\PointsNode.cs" />
     <Compile Include="Nodes\CircuitNodes\SignalIndicationNode.cs" />
