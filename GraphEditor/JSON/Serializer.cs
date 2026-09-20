@@ -1,15 +1,13 @@
-﻿using NodeGraphControl;
+﻿using GraphEditor.Nodes;
+using NodeGraphControl;
 using NodeGraphControl.Elements;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
-using GraphEditor.Nodes;
 
 namespace GraphEditor.JSON
 {
@@ -102,8 +100,10 @@ namespace GraphEditor.JSON
             }
         }
 
-        public static bool Save(string filePath, NodeGraphControl.NodeGraphControl graph)
+        public static bool SerializeSelection(GraphSelection selection, out string serialData)
         {
+            serialData = null;
+
             JsonData data = new JsonData
             {
                 Nodes = new List<JsonNodeData>()
@@ -111,14 +111,14 @@ namespace GraphEditor.JSON
 
             Dictionary<AbstractNode, int> idFromNode = new Dictionary<AbstractNode, int>();
             int idx = 0;
-            foreach (AbstractNode node in graph.Nodes)
+            foreach (AbstractNode node in selection.Nodes)
             {
                 idFromNode.Add(node, idx);
                 JsonNodeData nodeData = new JsonNodeData()
                 {
                     ID = idx,
-                    X = node.Location.X,
-                    Y = node.Location.Y,
+                    X = node.Location.X - selection.Origin.X,
+                    Y = node.Location.Y - selection.Origin.Y,
                     Name = node.Name,
                     Description = node.Description
                 };
@@ -128,7 +128,7 @@ namespace GraphEditor.JSON
                     nodeData.NodeData = sNode.GetNodeTypeJsonData();
                     if (!NodeTypeAttribute.TryGetAttribute(sNode.GetType(), out NodeTypeAttribute nodeTypeAttribute))
                         continue;
-                        
+
                     nodeData.NodeData.NodeType = nodeTypeAttribute.NodeType;
                 }
 
@@ -137,7 +137,7 @@ namespace GraphEditor.JSON
             }
 
             data.Links = new List<JsonLinkData>();
-            foreach (Wire wire in graph.Connections)
+            foreach (Wire wire in selection.Connections)
             {
                 if (idFromNode.TryGetValue(wire.From.Parent, out int fromId)
                     && idFromNode.TryGetValue(wire.To.Parent, out int toId))
@@ -159,28 +159,22 @@ namespace GraphEditor.JSON
                 WriteIndented = true,
                 TypeInfoResolver = new JsonNodeParamsTypeResolver()
             };
-            string fileData = JsonSerializer.Serialize(data, options);
-            File.WriteAllText(filePath, fileData);
-
+            serialData = JsonSerializer.Serialize(data, options);
             return true;
         }
 
-        public static bool Load(string filePath, NodeGraphControl.NodeGraphControl graph)
+        public static bool DeserializeSelection(string serialData, ref GraphSelection selection)
         {
-            string jsonData = File.ReadAllText(filePath);
-
             JsonSerializerOptions options = new JsonSerializerOptions()
             {
                 TypeInfoResolver = new JsonNodeParamsTypeResolver()
             };
-            JsonData data = JsonSerializer.Deserialize<JsonData>(jsonData, options);
+            JsonData data = JsonSerializer.Deserialize<JsonData>(serialData, options);
 
             if (data == null)
             {
                 return false;
             }
-
-            graph.Clear();
 
             Dictionary<int, AbstractNode> nodeFromId = new Dictionary<int, AbstractNode>();
             foreach (JsonNodeData nodeData in data.Nodes)
@@ -188,7 +182,7 @@ namespace GraphEditor.JSON
                 if (_serialNodeTypes.TryGetValue(nodeData.NodeData.NodeType, out Type nodeType))
                 {
                     var newNodeObj = (AbstractNode)Activator.CreateInstance(nodeType);
-                    newNodeObj.Location = new Point(nodeData.X, nodeData.Y);
+                    newNodeObj.Location = new Point(nodeData.X + selection.Origin.X, nodeData.Y + selection.Origin.Y);
                     newNodeObj.Name = nodeData.Name;
                     newNodeObj.Description = nodeData.Description;
                     newNodeObj.Calculate();
@@ -199,13 +193,11 @@ namespace GraphEditor.JSON
                         sNode.SetNodeJsonParams(nodeData.NodeData);
                     }
 
-                    graph.AddNode(newNodeObj);
+                    selection.Nodes.Add(newNodeObj);
 
                     nodeFromId.Add(nodeData.ID, newNodeObj);
                 }
             }
-
-            graph.Refresh();
 
             if (data.Links == null)
                 return true;
@@ -220,15 +212,37 @@ namespace GraphEditor.JSON
 
                     if (fromSocket is SocketOut outSocket && toSocket is SocketIn inSocket)
                     {
-                        graph.Connect(outSocket, inSocket);
+                        Wire wire = new Wire(outSocket, inSocket);
+                        selection.Connections.Add(wire);
                     }
                 }
+            }
+            return true;
+        }
 
+        public static bool Save(string filePath, NodeGraphControl.NodeGraphControl graph)
+        {
+            if (SerializeSelection(new GraphSelection(graph), out string fileData))
+            {
+                File.WriteAllText(filePath, fileData);
+                return true;
             }
 
-            graph.Refresh();
+            return false;
+        }
 
-            return true;
+        public static bool Load(string filePath, NodeGraphControl.NodeGraphControl graph)
+        {
+            string jsonData = File.ReadAllText(filePath);
+            GraphSelection selection = new GraphSelection();
+            if (DeserializeSelection(jsonData, ref selection))
+            {
+                graph.Clear();
+                selection.AddToGraph(graph);
+                return true;
+            }
+
+            return false;
         }
     }
 }

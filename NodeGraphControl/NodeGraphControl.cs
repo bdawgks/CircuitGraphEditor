@@ -66,11 +66,8 @@ namespace NodeGraphControl {
 
         public void Clear()
         {
-            var nodes = _graphNodes.ToArray();
-            foreach (AbstractNode node in nodes)
-            {
-                DeleteNode(node);
-            }
+            SetNodeSelected(true);
+            DeleteSelectedNodes();
         }
 
         public void AddNode(AbstractNode node) {
@@ -159,6 +156,10 @@ namespace NodeGraphControl {
         public event EventHandler<List<AbstractNode>> SelectionChanged;
 
         public event EventHandler<float> ZoomChanged;
+
+        public event EventHandler<GraphSelection> Copy;
+
+        public event EventHandler<Point> Paste;
 
         #endregion
 
@@ -259,6 +260,7 @@ namespace NodeGraphControl {
         bool dragging = false;
         bool abortDrag = false;
 
+        Point currentPosition;
         Point lastLocation;
         PointF snappedLocation;
         PointF originalLocation;
@@ -745,6 +747,8 @@ namespace NodeGraphControl {
             var deltaX = (lastLocation.X - currentLocation.X) / zoom;
             var deltaY = (lastLocation.Y - currentLocation.Y) / zoom;
 
+            currentPosition = currentLocation;
+
             switch (_command) {
                 case CommandMode.TranslateView: {
                     if (!mouseMoved) {
@@ -998,6 +1002,28 @@ namespace NodeGraphControl {
             if ((e.KeyData & Keys.Delete) == Keys.Delete) {
                 DeleteSelectedNodes();
             }
+
+            // copy
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                var points = new Point[] { currentPosition };
+                inverse_transformation.TransformPoints(points);
+                var transformed_location = points[0];
+                GraphSelection selection = new GraphSelection(this, true)
+                {
+                    Origin = transformed_location
+                };
+                Copy.Invoke(this, selection);
+            }
+
+            // paste
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                var points = new Point[] { currentPosition };
+                inverse_transformation.TransformPoints(points);
+                var transformed_location = points[0];
+                Paste.Invoke(this, transformed_location);
+            }
         }
 
         #endregion
@@ -1100,7 +1126,7 @@ namespace NodeGraphControl {
             var categories = new List<MenuItem>();
 
             var menuItemAdd = new MenuItem("Add Node");
-            var menuItemExit = new MenuItem("Exit", MenuItemClickExit); // TODO remove temp exit item
+            //var menuItemExit = new MenuItem("Exit", MenuItemClickExit); // TODO remove temp exit item
 
             foreach (var contextNode in _contextNodeList) {
                 var cnName = contextNode.NodeName;
@@ -1125,7 +1151,7 @@ namespace NodeGraphControl {
             }
 
             contextMenu.MenuItems.AddRange(new[] {
-                menuItemAdd, menuItemExit
+                menuItemAdd
             });
 
             contextMenu.Show(this, location);

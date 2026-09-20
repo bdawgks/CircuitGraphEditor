@@ -14,6 +14,7 @@ namespace GraphEditor {
     public partial class MainForm : Form {
 
         private string lastFilePath = Application.LocalUserAppDataPath;
+        private string graphClipboard = string.Empty;
 
         public MainForm() {
             InitializeComponent();
@@ -35,12 +36,35 @@ namespace GraphEditor {
                 MethodInfo genericMethod = methodInfo.MakeGenericMethod(nodeType);
                 genericMethod.Invoke(nodeGraphControl, new object[] { attrib.ContextName, "ToString()", attrib.ContextCategory });
             }
+
+            nodeGraphControl.Copy += NodeGraphControl_Copy;
+            nodeGraphControl.Paste += NodeGraphControl_Paste;
             
             // set type colors
             nodeGraphControl.AddTypeColorPair<CircuitType>(Color.GreenYellow);
             
             // run
             nodeGraphControl.Run();
+        }
+
+        private void NodeGraphControl_Paste(object sender, Point e)
+        {
+            if (graphClipboard == string.Empty)
+                return;
+
+            NodeGraphControl.GraphSelection selection = new NodeGraphControl.GraphSelection() { Origin = e };
+            if (Serializer.DeserializeSelection(graphClipboard, ref selection))
+            {
+                nodeGraphControl.SetNodeSelected(false);
+                selection.SetSelected(true);
+                selection.AddToGraph(nodeGraphControl);
+            }
+        }
+
+        private void NodeGraphControl_Copy(object sender, NodeGraphControl.GraphSelection e)
+        {
+            if (Serializer.SerializeSelection(e, out string data))
+                graphClipboard = data;
         }
 
         private void NodeGraph_SelectionChanged(object sender, List<AbstractNode> abstractNodes) {
