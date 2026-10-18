@@ -16,6 +16,7 @@ namespace GraphEditor.Nodes.CircuitNodes
     {
         public string SignalID { get; set; }
         public string RouteID { get; set; }
+        public string Indication { get; set; }
     }
 
     [NodeType("BlockController",
@@ -33,6 +34,10 @@ namespace GraphEditor.Nodes.CircuitNodes
         [Category("Parameters")]
         [DisplayParameter]
         public string RouteID { get; set; }
+
+        [Category("Parameters")]
+        [DisplayParameter]
+        public string Indication { get; set; }
 
         public BlockControllerNode() : this(new Point(0, 0))
         {
@@ -70,7 +75,8 @@ namespace GraphEditor.Nodes.CircuitNodes
             return new JsonParamsBlockController()
             {
                 SignalID = SignalID,
-                RouteID = RouteID
+                RouteID = RouteID,
+                Indication = Indication,
             };
         }
 
@@ -80,6 +86,7 @@ namespace GraphEditor.Nodes.CircuitNodes
             {
                 SignalID = jsonParams.SignalID;
                 RouteID = jsonParams.RouteID;
+                Indication = jsonParams.Indication;
             }
         }
     }

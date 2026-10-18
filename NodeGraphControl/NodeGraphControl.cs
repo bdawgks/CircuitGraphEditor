@@ -1126,7 +1126,6 @@ namespace NodeGraphControl {
             var categories = new List<MenuItem>();
 
             var menuItemAdd = new MenuItem("Add Node");
-            //var menuItemExit = new MenuItem("Exit", MenuItemClickExit); // TODO remove temp exit item
 
             foreach (var contextNode in _contextNodeList) {
                 var cnName = contextNode.NodeName;
@@ -1155,11 +1154,6 @@ namespace NodeGraphControl {
             });
 
             contextMenu.Show(this, location);
-        }
-
-        // TODO remove this... exit will be handled by application
-        private void MenuItemClickExit(object sender, EventArgs e) {
-            Application.Exit();
         }
 
         private void MenuItemClickNode(object sender, EventArgs e) {
