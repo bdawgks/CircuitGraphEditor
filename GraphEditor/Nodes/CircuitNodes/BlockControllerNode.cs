@@ -27,6 +27,9 @@ namespace GraphEditor.Nodes.CircuitNodes
         private readonly SocketIn _setSocket;
         private readonly SocketIn _unsetSocket;
 
+        private readonly SocketOut _socketSetOut;
+        private readonly SocketOut _socketUnsetOut;
+
         [Category("Parameters")]
         [DisplayParameter]
         public string SignalID { get; set; }
@@ -57,8 +60,14 @@ namespace GraphEditor.Nodes.CircuitNodes
             _setSocket = new SocketIn(typeof(CircuitType), "Set Route", this, true);
             _unsetSocket = new SocketIn(typeof(CircuitType), "Unset Route", this, true);
 
+            _socketSetOut = new SocketOut(typeof(CircuitType), "Route Set", this);
+            _socketUnsetOut = new SocketOut(typeof(CircuitType), "Route Unset", this);
+
             Sockets.Add(_setSocket);
             Sockets.Add(_unsetSocket);
+
+            Sockets.Add(_socketSetOut);
+            Sockets.Add(_socketUnsetOut);
         }
 
         public override bool IsReady()
