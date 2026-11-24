@@ -46,6 +46,7 @@
     <Compile Include="Elements\AbstractSocket.cs" />
     <Compile Include="Elements\ContextNode.cs" />
     <Compile Include="Elements\IElement.cs" />
+    <Compile Include="Elements\NodeTemplate.cs" />
     <Compile Include="Elements\SocketIn.cs" />
     <Compile Include="Elements\SocketOut.cs" />
     <Compile Include="Elements\Wire.cs" />

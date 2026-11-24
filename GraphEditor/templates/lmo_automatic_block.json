@@ -1,0 +1,192 @@
+{
+  "Nodes": [
+    {
+      "ID": 0,
+      "X": 1030,
+      "Y": -92,
+      "Name": "%SIGNAL% CLEAR",
+      "Description": "Signal indication control circuit.",
+      "NodeData": {
+        "ParamsType": "SignalIndication",
+        "SignalID": "%SIGNAL%",
+        "Indication": "Clear",
+        "NodeType": "SignalIndication"
+      }
+    },
+    {
+      "ID": 1,
+      "X": -330,
+      "Y": 104,
+      "Name": "Button %SIGNAL%",
+      "Description": "State button circuit control.",
+      "NodeData": {
+        "ParamsType": "StateButton",
+        "ButtonID": "%ID_BTN%",
+        "States": 2,
+        "NodeType": "StateButton"
+      }
+    },
+    {
+      "ID": 2,
+      "X": 169,
+      "Y": 106,
+      "Name": "%SIGNAL% Automatic Mode",
+      "Description": "Toggles an output on or off based on independently defined conditions.",
+      "NodeData": {
+        "ParamsType": "ConditionalState",
+        "StartOn": true,
+        "NodeType": "ConditionalState"
+      }
+    },
+    {
+      "ID": 3,
+      "X": 145,
+      "Y": -30,
+      "Name": "%ID_BLOCK% Reserved",
+      "Description": "Activates a circuit when a particular block controller block is reserved.",
+      "NodeData": {
+        "ParamsType": "BlockReserved",
+        "BlockID": "%ID_BLOCK%",
+        "NodeType": "BlockReserved"
+      }
+    },
+    {
+      "ID": 4,
+      "X": 144,
+      "Y": -162,
+      "Name": "%ID_BLOCK% Occupied",
+      "Description": "Detector control circuit.",
+      "NodeData": {
+        "ParamsType": "Detector",
+        "DetectorID": "%ID_BLOCK%",
+        "NodeType": "Detector"
+      }
+    },
+    {
+      "ID": 5,
+      "X": 510,
+      "Y": -166,
+      "Name": "%ID_BLOCK% Available",
+      "Description": "Applies NOT logic to any circuit inputs, and outputs a result circuit.",
+      "NodeData": {
+        "ParamsType": "Generic",
+        "NodeType": "LogicNot"
+      }
+    },
+    {
+      "ID": 6,
+      "X": 763,
+      "Y": -92,
+      "Name": "%SIGNAL% CLEAR",
+      "Description": "Applies AND logic to multiple circuit inputs, and outputs a result circuit.",
+      "NodeData": {
+        "ParamsType": "Generic",
+        "NodeType": "LogicAnd"
+      }
+    },
+    {
+      "ID": 7,
+      "X": 473,
+      "Y": 163,
+      "Name": "%SIGNAL% STOP",
+      "Description": "Applies NOT logic to any circuit inputs, and outputs a result circuit.",
+      "NodeData": {
+        "ParamsType": "Generic",
+        "NodeType": "LogicNot"
+      }
+    },
+    {
+      "ID": 8,
+      "X": 794,
+      "Y": 164,
+      "Name": "%SIGNAL% STOP",
+      "Description": "Signal indication control circuit.",
+      "NodeData": {
+        "ParamsType": "SignalIndication",
+        "SignalID": "%SIGNAL%",
+        "Indication": "Stop",
+        "NodeType": "SignalIndication"
+      }
+    }
+  ],
+  "Links": [
+    {
+      "FromID": 1,
+      "ToID": 2,
+      "FromSocket": "Activated State #1",
+      "ToSocket": "Condition On"
+    },
+    {
+      "FromID": 1,
+      "ToID": 2,
+      "FromSocket": "Activated State #0",
+      "ToSocket": "Condition Off"
+    },
+    {
+      "FromID": 2,
+      "ToID": 7,
+      "FromSocket": "Result",
+      "ToSocket": "Inputs"
+    },
+    {
+      "FromID": 2,
+      "ToID": 1,
+      "FromSocket": "Result",
+      "ToSocket": "Show State #0"
+    },
+    {
+      "FromID": 7,
+      "ToID": 1,
+      "FromSocket": "Result",
+      "ToSocket": "Show State #1"
+    },
+    {
+      "FromID": 7,
+      "ToID": 8,
+      "FromSocket": "Result",
+      "ToSocket": "Set Indication"
+    },
+    {
+      "FromID": 3,
+      "ToID": 5,
+      "FromSocket": "Block Reserved",
+      "ToSocket": "Inputs"
+    },
+    {
+      "FromID": 4,
+      "ToID": 5,
+      "FromSocket": "Occupied",
+      "ToSocket": "Inputs"
+    },
+    {
+      "FromID": 3,
+      "ToID": 8,
+      "FromSocket": "Block Reserved",
+      "ToSocket": "Set Indication"
+    },
+    {
+      "FromID": 4,
+      "ToID": 8,
+      "FromSocket": "Occupied",
+      "ToSocket": "Set Indication"
+    },
+    {
+      "FromID": 2,
+      "ToID": 6,
+      "FromSocket": "Result",
+      "ToSocket": "Inputs"
+    },
+    {
+      "FromID": 5,
+      "ToID": 6,
+      "FromSocket": "Result",
+      "ToSocket": "Inputs"
+    },
+    {
+      "FromID": 6,
+      "ToID": 0,
+      "FromSocket": "Result",
+      "ToSocket": "Set Indication"
+    }
+  ]
+}

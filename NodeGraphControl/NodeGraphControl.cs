@@ -9,11 +9,14 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NodeGraphControl.Elements;
 
-namespace NodeGraphControl {
-    public partial class NodeGraphControl : Control {
+namespace NodeGraphControl 
+{
+    public partial class NodeGraphControl : Control 
+    {
         #region Constructor
 
-        public NodeGraphControl() {
+        public NodeGraphControl() 
+        {
             InitializeComponent();
             this.SetStyle(
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque | ControlStyles.OptimizedDoubleBuffer |
@@ -24,13 +27,15 @@ namespace NodeGraphControl {
         
         #region Interface
 
-        public void Run() {
+        public void Run() 
+        {
             foreach (var abstractNode in _graphNodes.Where(abstractNode => abstractNode.StartNode)) {
                 abstractNode.Execute();
             }
         }
 
         private readonly List<ContextNode> _contextNodeList = new List<ContextNode>();
+        private readonly List<NodeTemplate> _templates = new List<NodeTemplate>();
 
         public void AddContextNodeType<T>(string contextName, string contextDescription, string contextCategory)
             where T : AbstractNode {
@@ -70,13 +75,15 @@ namespace NodeGraphControl {
             DeleteSelectedNodes();
         }
 
-        public void AddNode(AbstractNode node) {
+        public void AddNode(AbstractNode node) 
+        {
             node.InvokeRepaint += n_InvokeRepaint;
             _graphNodes.Add(node);
             node.Calculate();
         }
 
-        public void DeleteNode(AbstractNode node) {
+        public void DeleteNode(AbstractNode node) 
+        {
             node.Disconnect();
             _graphNodes.Remove(node);
             ValidateConnections();
@@ -84,8 +91,10 @@ namespace NodeGraphControl {
             Refresh();
         }
 
-        private void DeleteSelectedNodes() {
-            for (var i = _graphNodes.Count - 1; i >= 0; i--) {
+        private void DeleteSelectedNodes() 
+        {
+            for (var i = _graphNodes.Count - 1; i >= 0; i--) 
+            {
                 var node = _graphNodes[i];
                 if (node.Selected) {
                     node.Disconnect();
@@ -98,7 +107,20 @@ namespace NodeGraphControl {
             Refresh();
         }
 
-        public void Connect(SocketOut from, SocketIn to) {
+        public void AddTemplate(NodeTemplate template)
+        {
+            int idx = _templates.FindIndex(t => t.Name == template.Name);
+            if (idx >= 0)
+            {
+                _templates[idx] = template;
+                return;
+            }
+
+            _templates.Add(template);
+        }
+
+        public void Connect(SocketOut from, SocketIn to) 
+        {
             Wire wire = null;
             
             try {
@@ -117,7 +139,8 @@ namespace NodeGraphControl {
             ValidateConnections();
         }
 
-        private void Disconnect(Wire wire) {
+        private void Disconnect(Wire wire) 
+        {
             if (wire == null)
                 return;
 
@@ -125,8 +148,10 @@ namespace NodeGraphControl {
             _connections.Remove(wire);
         }
 
-        private void ValidateConnections() {
-            for (var i = _connections.Count - 1; i >= 0; i--) {
+        private void ValidateConnections() 
+        {
+            for (var i = _connections.Count - 1; i >= 0; i--) 
+            {
                 var con = _connections[i];
 
                 if (con.From == null || con.To == null
@@ -137,15 +162,18 @@ namespace NodeGraphControl {
             }
         }
 
-        public void SetNodeSelected(bool selected) {
-            foreach (var node in _graphNodes) {
+        public void SetNodeSelected(bool selected) 
+        {
+            foreach (var node in _graphNodes) 
+            {
                 node.Selected = selected;
             }
 
             HandleSelection();
         }
 
-        public void AddTypeColorPair<T>(Color color) {
+        public void AddTypeColorPair<T>(Color color) 
+        {
             CommonStates.TypeColor.Add(typeof(T), color);
         }
 
@@ -161,6 +189,8 @@ namespace NodeGraphControl {
 
         public event EventHandler<Point> Paste;
 
+        public event EventHandler<InsertTemplateEventArgs> InsertTemplate;
+
         #endregion
 
         #region EventData
@@ -169,7 +199,8 @@ namespace NodeGraphControl {
 
         #region EventHandlers
 
-        private void n_InvokeRepaint(object sender, EventArgs e) {
+        private void n_InvokeRepaint(object sender, EventArgs e) 
+        {
             Invalidate();
         }
         
@@ -178,7 +209,8 @@ namespace NodeGraphControl {
         #region GridSettings
 
         // grid style
-        public enum EGridStyle {
+        public enum EGridStyle 
+        {
             Grid,
             Dots,
             None
@@ -187,7 +219,8 @@ namespace NodeGraphControl {
         private EGridStyle _gridStyle = EGridStyle.Grid;
 
         [Description("The type of rendered grid"), Category("Appearance"), DisplayName("Grid Style")]
-        public EGridStyle GridStyle {
+        public EGridStyle GridStyle 
+        {
             get { return _gridStyle; }
             set {
                 if (_gridStyle == value)
@@ -202,7 +235,8 @@ namespace NodeGraphControl {
         private int _gridStep = 16 * 8;
 
         [Description("The distance between the largest grid lines"), Category("Appearance")]
-        public int GridStep {
+        public int GridStep 
+        {
             get { return _gridStep; }
             set {
                 if (_gridStep == value)
@@ -219,7 +253,8 @@ namespace NodeGraphControl {
         private Brush _gridBrush = new SolidBrush(Color.LightGray);
 
         [Description("The color for the grid lines with the largest gap between them"), Category("Appearance")]
-        public Color GridColor {
+        public Color GridColor 
+        {
             get { return _gridColor; }
             set {
                 if (_gridColor == value)
@@ -244,7 +279,8 @@ namespace NodeGraphControl {
 
         #region regionToBeSorted
 
-        private enum CommandMode {
+        private enum CommandMode 
+        {
             Edit,
             MarqueSelection,
             MoveSelection,
@@ -1119,25 +1155,31 @@ namespace NodeGraphControl {
 
         private Point _contextMenuMouseClick;
 
-        private void OpenContextMenu(Point location) {
+        private void OpenContextMenu(Point location) 
+        {
             _contextMenuMouseClick = location;
 
             var contextMenu = new ContextMenu();
             var categories = new List<MenuItem>();
 
+            // Add node types
             var menuItemAdd = new MenuItem("Add Node");
 
-            foreach (var contextNode in _contextNodeList) {
+            foreach (var contextNode in _contextNodeList) 
+            {
                 var cnName = contextNode.NodeName;
                 var cnCat = contextNode.NodeCategory;
 
                 if (cnCat.Equals(""))
                     menuItemAdd.MenuItems.Add(cnName, MenuItemClickNode);
-                else {
+                else 
+                {
                     var categoryMenuItem = categories.Find(item => item.Text.Equals(cnCat));
-                    if (categoryMenuItem != null) {
+                    if (categoryMenuItem != null)
+                    {
                         categoryMenuItem.MenuItems.Add(new MenuItem(cnName, MenuItemClickNode));
-                    } else {
+                    } else 
+                    {
                         categoryMenuItem = new MenuItem(cnCat);
                         categoryMenuItem.MenuItems.Add(new MenuItem(cnName, MenuItemClickNode));
                         categories.Add(categoryMenuItem);
@@ -1145,18 +1187,33 @@ namespace NodeGraphControl {
                 }
             }
 
-            foreach (var category in categories) {
+            // Add templates
+            var menuItemTemplate = new MenuItem("Insert Template");
+            foreach (var template in _templates)
+            {
+                string name = template.Name;
+                if (name != "")
+                {
+                    menuItemTemplate.MenuItems.Add(name, MenuItemClickTemplate);
+                }
+            }
+
+
+            foreach (var category in categories) 
+            {
                 menuItemAdd.MenuItems.Add(category);
             }
 
             contextMenu.MenuItems.AddRange(new[] {
-                menuItemAdd
+                menuItemAdd,
+                menuItemTemplate
             });
 
             contextMenu.Show(this, location);
         }
 
-        private void MenuItemClickNode(object sender, EventArgs e) {
+        private void MenuItemClickNode(object sender, EventArgs e)
+        {
             if (!(sender is MenuItem item)) return;
 
             var contextNode = _contextNodeList.Find(context => context.NodeName.Equals(item.Text));
@@ -1173,6 +1230,18 @@ namespace NodeGraphControl {
             AddNode(newNodeObj);
 
             Refresh();
+        }
+
+        private void MenuItemClickTemplate(object sender, EventArgs e)
+        {
+            if (!(sender is MenuItem item)) return;
+
+            var template = _templates.Find(context => context.Name.Equals(item.Text));
+            var locationTranslated = GetTranslatedPosition(_contextMenuMouseClick);
+            Point location = new Point((int)locationTranslated.X, (int)locationTranslated.Y);
+
+            InsertTemplateEventArgs newArgs = new InsertTemplateEventArgs(template, location);
+            InsertTemplate.Invoke(this, newArgs);
         }
 
         #endregion

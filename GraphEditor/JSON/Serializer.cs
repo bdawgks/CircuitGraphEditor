@@ -231,6 +231,20 @@ namespace GraphEditor.JSON
             return false;
         }
 
+        public static bool SaveTemplate(string filePath, NodeGraphControl.NodeGraphControl graph, out NodeTemplate template)
+        {
+            template = null;
+            if (SerializeSelection(new GraphSelection(graph), out string fileData))
+            {
+                File.WriteAllText(filePath, fileData);
+                string name = Path.GetFileNameWithoutExtension(filePath);
+                template = new NodeTemplate(name, fileData);
+                return true;
+            }
+
+            return false;
+        }
+
         public static bool Load(string filePath, NodeGraphControl.NodeGraphControl graph)
         {
             string jsonData = File.ReadAllText(filePath);

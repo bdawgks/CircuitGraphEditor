@@ -1,6 +1,7 @@
 using System;
 
-namespace NodeGraphControl.Elements {
+namespace NodeGraphControl.Elements 
+{
     public class ContextNode {
         public Type NodeType { get; set; }
         public string NodeName { get; set; } 

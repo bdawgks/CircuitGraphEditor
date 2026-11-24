@@ -16,7 +16,10 @@ namespace GraphEditor {
         private string lastFilePath = Application.LocalUserAppDataPath;
         private string graphClipboard = string.Empty;
 
-        public MainForm() {
+        private readonly string templatePath = Path.GetDirectoryName(Application.ExecutablePath) + "\\templates\\";
+
+        public MainForm() 
+        {
             InitializeComponent();
         }
 
@@ -39,12 +42,48 @@ namespace GraphEditor {
 
             nodeGraphControl.Copy += NodeGraphControl_Copy;
             nodeGraphControl.Paste += NodeGraphControl_Paste;
+            nodeGraphControl.InsertTemplate += NodeGraphControl_InsertTemplate;
+
+            // Load saved templates
+            var templateFiles = Directory.GetFiles(templatePath);
+            foreach (var templateFile in templateFiles)
+            {
+                if (Path.GetExtension(templateFile) == ".json")
+                {
+                    string name = Path.GetFileNameWithoutExtension(templateFile);
+                    NodeTemplate template = new NodeTemplate(name, File.ReadAllText(templateFile));
+                    nodeGraphControl.AddTemplate(template);
+                }
+            }
             
             // set type colors
             nodeGraphControl.AddTypeColorPair<CircuitType>(Color.GreenYellow);
             
             // run
             nodeGraphControl.Run();
+        }
+
+        private void NodeGraphControl_InsertTemplate(object sender, InsertTemplateEventArgs e)
+        {
+            InsertTemplate insertTemplateForm = new InsertTemplate(e.Template);
+            if (insertTemplateForm.ShowDialog(this) ==  DialogResult.OK)
+            {
+                if (!e.Template.FormatTemplate(insertTemplateForm.GetValues(), out string formattedData))
+                    return;
+
+                NodeGraphControl.GraphSelection selection = new NodeGraphControl.GraphSelection() { Origin = e.Point };
+                if (Serializer.DeserializeSelection(formattedData, ref selection))
+                {
+                    nodeGraphControl.SetNodeSelected(false);
+                    selection.SetSelected(true);
+                    selection.AddToGraph(nodeGraphControl);
+                }
+            }
+            else
+            {
+                var vals = insertTemplateForm.GetValues();
+            }
+            insertTemplateForm.Dispose();
         }
 
         private void NodeGraphControl_Paste(object sender, Point e)
@@ -122,6 +161,25 @@ namespace GraphEditor {
             {
                 lastFilePath = Path.GetDirectoryName(openFileDialog.FileName);
                 Serializer.Load(openFileDialog.FileName, nodeGraphControl);
+            }
+        }
+
+        private void saveAsTemplateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                InitialDirectory = templatePath,
+                Filter = "json files(*.json) | *.json",
+                FilterIndex = 0,
+                RestoreDirectory = false
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (Serializer.SaveTemplate(saveFileDialog.FileName, nodeGraphControl, out NodeTemplate newTemplate))
+                {
+                    nodeGraphControl.AddTemplate(newTemplate);
+                }
             }
         }
     }
