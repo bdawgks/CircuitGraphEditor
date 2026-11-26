@@ -36,6 +36,7 @@ namespace NodeGraphControl
 
         private readonly List<ContextNode> _contextNodeList = new List<ContextNode>();
         private readonly List<NodeTemplate> _templates = new List<NodeTemplate>();
+        private readonly List<Elements.Group> _groups = new List<Elements.Group>();
 
         public void AddContextNodeType<T>(string contextName, string contextDescription, string contextCategory)
             where T : AbstractNode {
@@ -67,6 +68,11 @@ namespace NodeGraphControl
         public List<Wire> Connections
         {
             get => _connections;
+        }
+
+        public List<Elements.Group> Groups
+        {
+            get => _groups;
         }
 
         public void Clear()
@@ -117,6 +123,26 @@ namespace NodeGraphControl
             }
 
             _templates.Add(template);
+        }
+
+        public Elements.Group NewGroup()
+        {
+            // Group IDs must start at 1, as 0 = no group
+            Elements.Group newGroup = new Elements.Group(_groups.Count + 1);
+            _groups.Add(newGroup);
+            return newGroup;
+        }
+
+        public void AddNodeToGroup(AbstractNode node, int groupId)
+        {
+            Elements.Group group = _groups.Find(g => g.Id == groupId);
+            if (group == null)
+            {
+                group = new Elements.Group(groupId);
+                _groups.Add(group);
+            }
+
+            node.Group = group;
         }
 
         public void Connect(SocketOut from, SocketIn to) 
@@ -1187,6 +1213,11 @@ namespace NodeGraphControl
                 }
             }
 
+            foreach (var category in categories)
+            {
+                menuItemAdd.MenuItems.Add(category);
+            }
+
             // Add templates
             var menuItemTemplate = new MenuItem("Insert Template");
             foreach (var template in _templates)
@@ -1198,16 +1229,25 @@ namespace NodeGraphControl
                 }
             }
 
-
-            foreach (var category in categories) 
-            {
-                menuItemAdd.MenuItems.Add(category);
-            }
-
             contextMenu.MenuItems.AddRange(new[] {
                 menuItemAdd,
                 menuItemTemplate
             });
+
+            // Add group/ungroup
+            List<AbstractNode> selected = _graphNodes.Where(n => n.Selected).ToList();
+            if (selected.Count > 1)
+            {
+                var menuItemGroup = new MenuItem("Group Selected");
+                menuItemGroup.Click += MenuItemClickGroup;
+                contextMenu.MenuItems.Add(menuItemGroup);
+            }
+            if (selected.Count(n => n.Group != null) > 0)
+            {
+                var menuItemUngroup = new MenuItem("Ungroup Selected");
+                menuItemUngroup.Click += MenuItemClickUngroup;
+                contextMenu.MenuItems.Add(menuItemUngroup);
+            }
 
             contextMenu.Show(this, location);
         }
@@ -1244,19 +1284,61 @@ namespace NodeGraphControl
             InsertTemplate.Invoke(this, newArgs);
         }
 
+        private void MenuItemClickGroup(object sender, EventArgs e)
+        {
+            List<AbstractNode> selected = _graphNodes.Where(n => n.Selected).ToList();
+            if (selected.Count < 2) return;
+
+            Elements.Group group = NewGroup();
+
+            foreach (AbstractNode n in selected)
+            {
+                n.Group = group;
+            }
+        }
+
+        private void MenuItemClickUngroup(object sender, EventArgs e)
+        {
+            List<AbstractNode> selected = _graphNodes.Where(n => n.Selected).ToList();
+            if (selected.Count < 1) return;
+
+            foreach (AbstractNode n in selected)
+            {
+                n.Group = null;
+            }
+        }
+
         #endregion
 
         #region NodeSelection
 
         private List<AbstractNode> lastSelected = new List<AbstractNode>();
 
-        private void HandleSelection() {
+        private void HandleSelection() 
+        {
             var selected = _graphNodes.Where(node => node.Selected).ToList();
 
-            if (lastSelected.Count != selected.Count) {
+            // Select all grouped nodes
+            foreach (AbstractNode node in selected)
+            {
+                if (node.Group != null)
+                {
+                    foreach (AbstractNode n in node.Group.Nodes)
+                    {
+                        if (n != node && !n.Selected)
+                        {
+                            n.Selected = true;
+                        }
+                    }
+                }
+            }
+
+            if (lastSelected.Count != selected.Count) 
+            {
                 SelectionChanged?.Invoke(this, selected);
                 lastSelected = selected;
-            } else if (!lastSelected.SequenceEqual(selected)) {
+            } else if (!lastSelected.SequenceEqual(selected)) 
+            {
                 SelectionChanged?.Invoke(this, selected);
                 lastSelected = selected;
             }

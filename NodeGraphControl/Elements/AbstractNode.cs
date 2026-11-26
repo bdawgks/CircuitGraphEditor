@@ -18,7 +18,20 @@ namespace NodeGraphControl.Elements {
 
         public bool StartNode = false;
 
+        protected Group _group = null;
+
         public List<AbstractSocket> Sockets { get; } = new List<AbstractSocket>();
+
+        public Group Group
+        {
+            get => _group;
+            set
+            {
+                _group?.Nodes.Remove(this);
+                _group = value;
+                _group?.Nodes.Add(this);
+            }
+        }
 
         protected const float HeaderHeight = 40;
 

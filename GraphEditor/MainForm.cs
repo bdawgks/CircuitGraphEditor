@@ -76,6 +76,7 @@ namespace GraphEditor {
                 {
                     nodeGraphControl.SetNodeSelected(false);
                     selection.SetSelected(true);
+                    selection.CreateNewGroup(true);
                     selection.AddToGraph(nodeGraphControl);
                 }
             }

@@ -3,6 +3,7 @@ using NodeGraphControl;
 using NodeGraphControl.Elements;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Text.Json;
@@ -22,6 +23,7 @@ namespace GraphEditor.JSON
         public int ID { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public int Group { get; set; }
         public string Name {  get; set; }
         public string Description { get; set; }
         public JsonParamsData NodeData { get; set; }
@@ -114,13 +116,18 @@ namespace GraphEditor.JSON
             foreach (AbstractNode node in selection.Nodes)
             {
                 idFromNode.Add(node, idx);
+                int grpId = -1;
+                if (node.Group != null)
+                    grpId = node.Group.Id;
+
                 JsonNodeData nodeData = new JsonNodeData()
                 {
                     ID = idx,
                     X = node.Location.X - selection.Origin.X,
                     Y = node.Location.Y - selection.Origin.Y,
                     Name = node.Name,
-                    Description = node.Description
+                    Description = node.Description,
+                    Group = grpId
                 };
 
                 if (node is ISerializableNode sNode)
@@ -194,6 +201,12 @@ namespace GraphEditor.JSON
                     }
 
                     selection.Nodes.Add(newNodeObj);
+
+                    // Restore group
+                    if (nodeData.Group > 0)
+                    {
+                        selection.AddNodeToGroup(newNodeObj, nodeData.Group);
+                    }
 
                     nodeFromId.Add(nodeData.ID, newNodeObj);
                 }
